@@ -1,0 +1,67 @@
+#coding:utf-8
+import cv2
+import numpy as np
+
+"""
+函數名：cv2.VideoCapture()
+功  能：通過攝像頭捕獲實時圖像數據
+返回值：有
+參數一：攝像頭代號，0為默認攝像頭，筆記本內建攝像頭一般為 0
+       或者填寫視頻名稱直接加載本地視頻文件
+"""
+cap = cv2.VideoCapture(0)#創建一個 VideoCapture 對象
+
+"""
+函數名：cap.set( propId , value )
+功  能：設置視頻參數。設置視頻的寬高值和攝像頭有關
+       使用筆記本內置攝像頭時只能設置為 1280*720 以及 640*480，哪怕設置值不同時都會自動校正過來，並且仍然返回 True
+返回值：布爾值
+參數一：需要設置的視頻參數
+參數二：設置的參數值
+"""
+cap.set(3,480)
+cap.set(4,320)
+
+flag = 1;#設置一個標誌，用來輸出視頻信息
+"""
+函數名：cv2.isOpened()
+功  能：返回一個布爾值（ True / False ），檢查是否初始化成功，成功返回 True
+返回值：布爾值
+"""
+while(cap.isOpened()):#循環讀取每一幀
+    """
+    函數名：cap.read()
+    功  能：返回兩個值
+           先返回一個布爾值，如果視頻讀取正確，則為 True，如果錯誤，則為 False，也可用來判斷是否到視頻末尾
+           再返回一個值，為每一幀的圖像，該值是一個三維矩陣
+           通用接收方法為：
+           ret,frame = cap.read();
+           這樣 ret 存儲布爾值，frame 存儲圖像
+           若使用一個變量來接收兩個值，如
+           frame = cap.read()
+           則 frame 為一個元組，原來使用 frame 處需更改為 frame[1]
+    返回值：R1：布爾值
+           R2：圖像的三維矩陣
+    """
+    ret_flag , Vshow = cap.read()
+    #gray = cv2.cvtColor(Vshow,cv2.COLOR_BGR2GRAY)
+    #cv2.imshow("Gray",gray)
+
+    cv2.imshow("Capturing",Vshow)  #窗口顯示，顯示名為 Capturing
+
+    k = cv2.waitKey(1) & 0xFF #每幀數據延時 1ms，延時不能為 0，否則讀取的結果會是靜態幀
+    if  k == ord(‘s‘):  #若檢測到按鍵 ‘s’，打印字符串
+        """
+        函數名：cap.get( propId )
+        功  能：查詢視頻的參數
+        返回值：無
+        參數一：查詢的視頻參數，其中部分值可以使用 cap.set() 進行修改
+        """
+        print(cap.get(3));
+        print(cap.get(4));
+
+    elif k == ord(‘q‘): #若檢測到按鍵 ‘q’，退出
+        break
+
+cap.release() #釋放攝像頭
+cv2.destroyAllWindows()#刪除建立的全部窗口
